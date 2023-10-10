@@ -10,7 +10,7 @@ import import_number
 
 
 # upload file config
-UPLOAD_FOLDER = 'uploads/'
+UPLOAD_FOLDER = config.UPLOAD_FILE
 ALLOWED_EXTENSIONS = {'xlsx'}
 
 # app config
@@ -52,14 +52,16 @@ def allowed_file(filename):
 def upload_file():
     if request.method == 'POST':
         # check if the post request has the file part
+
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
         file = request.files['file']
         text = request.form['message']
-        print(text)
+
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
+
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
@@ -67,7 +69,7 @@ def upload_file():
             filename = secure_filename(file.filename)
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(path)
-            import_number.importPhone(path)
+            import_number.importPhone(filepath=path, msg=text)
             return redirect(url_for('upload_file', name=filename))
     return '''
     <!doctype html>
